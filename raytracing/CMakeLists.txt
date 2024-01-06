@@ -6,9 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB SRC_FILES *.cpp)
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/common
-  ${CMAKE_SOURCE_DIR}/external/raygui/src)
+include_directories(${CGINCLUDES})
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_compile_options(${PROJECT_NAME} PRIVATE ${CGFLAGS})

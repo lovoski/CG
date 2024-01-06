@@ -16,6 +16,10 @@ set(CGLIBS
 set(CGFLAGS
   "")
 
+set(CGINCLUDES
+  ${CMAKE_SOURCE_DIR}/common
+  ${CMAKE_SOURCE_DIR}/external/raygui/src)
+
 if (OpenMP_CXX_FOUND)
   add_definitions(-DOPENMP_FOUND)
   set(CGLIBS
