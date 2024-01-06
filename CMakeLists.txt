@@ -2,14 +2,16 @@ cmake_minimum_required(VERSION 3.20)
 
 project(CG)
 
-find_package(raylib CONFIG REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
+set(CMAKE_CXX_STANDARD 14)
+
 find_package(OpenMP REQUIRED)
+
+add_subdirectory(external/raylib)
+add_subdirectory(external/eigen3)
 
 set(CGLIBS
   raylib
-  Eigen3::Eigen
-)
+  Eigen3::Eigen)
 
 set(CGFLAGS
   "")

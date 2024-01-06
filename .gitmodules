@@ -1,0 +1,9 @@
+[submodule "external/raylib"]
+	path = external/raylib
+	url = git@github.com:raysan5/raylib.git
+[submodule "external/raygui"]
+	path = external/raygui
+	url = git@github.com:raysan5/raygui.git
+[submodule "external/eigen3"]
+	path = external/eigen3
+	url = https://gitlab.com/libeigen/eigen.git

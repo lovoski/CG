@@ -1,6 +1,7 @@
 #ifndef RAYTRACING_GLOBAL_HPP
 #define RAYTRACING_GLOBAL_HPP
 
+// Std
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
@@ -9,24 +10,23 @@
 #include <memory>
 #include <random>
 #include <vector>
-
-
-// Common headers
+// Raylib
 #include <raylib.h>
-
+#define RAYGUI_IMPLEMENTATION
+#include <raygui.h>
+// Eigen
 #include <Eigen/Core>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+// OpenMP
 #ifdef OPENMP_FOUND
 #include <omp.h>
 #endif
-
+// Common
 #include "Buffer.h"
+// Raytracing
 #include "interval.hpp"
 #include "ray.hpp"
-
-#define RAYGUI_IMPLEMENTATION
-#include <raygui.h>
 
 using std::make_shared;
 using std::shared_ptr;
