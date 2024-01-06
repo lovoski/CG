@@ -25,8 +25,8 @@
 // Common
 #include "Buffer.h"
 // Raytracing
-#include "interval.hpp"
 #include "ray.hpp"
+#include "interval.hpp"
 
 using std::make_shared;
 using std::shared_ptr;

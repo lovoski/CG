@@ -58,26 +58,27 @@ class camera {
 
   Buffer render(hittable_list &world) {
     Buffer buffer(width, height);
+    int totalPixels = width*height;
     #ifdef OPENMP_FOUND
     #pragma omp parallel for
     #endif
-    for (int x = 0; x < width; ++x) {
-      for (int y = 0; y < height; ++y) {
-        vec3 pixel_color(0.0, 0.0, 0.0);
-        for (int k = 0; k < samples_per_pixel; ++k) {
-          vec3 pixel_pos(0, 0, 0);
-          pixel_pos += m_at;
-          pixel_pos += viewport_u * (x - width / 2.0 + rand_double());
-          pixel_pos += viewport_v * (y - height / 2.0 + rand_double());
-          ray r(m_pos, (pixel_pos - m_pos).normalized());
-          pixel_color += ray_trace(r, world, max_depth);
-        }
-        // averaging the results
-        pixel_color /= samples_per_pixel;
-        buffer.setPixel(x, y, (uint8_t)(pixel_color.x() * 255),
-                        (uint8_t)(pixel_color.y() * 255),
-                        (uint8_t)(pixel_color.z() * 255));
+    for (int pn = 0; pn < totalPixels; ++pn) {
+      int y = pn/width;
+      int x = pn-y*width;
+      vec3 pixel_color(0.0, 0.0, 0.0);
+      for (int k = 0; k < samples_per_pixel; ++k) {
+        vec3 pixel_pos(0, 0, 0);
+        pixel_pos += m_at;
+        pixel_pos += viewport_u * (x - width / 2.0 + rand_double());
+        pixel_pos += viewport_v * (y - height / 2.0 + rand_double());
+        ray r(m_pos, (pixel_pos - m_pos).normalized());
+        pixel_color += ray_trace(r, world, max_depth);
       }
+      // averaging the results
+      pixel_color /= samples_per_pixel;
+      buffer.setPixel(x, y, (uint8_t)(pixel_color.x() * 255),
+                      (uint8_t)(pixel_color.y() * 255),
+                      (uint8_t)(pixel_color.z() * 255));
     }
     return buffer;
   }

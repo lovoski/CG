@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(CG)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenMP REQUIRED)
 
@@ -16,12 +16,13 @@ set(CGLIBS
 set(CGFLAGS
   "")
 
-set(CGINCLUDES
-  ${CMAKE_SOURCE_DIR}/common
-  ${CMAKE_SOURCE_DIR}/external/raygui/src)
+set(CGDEFINITIONS
+  "")
 
 if (OpenMP_CXX_FOUND)
-  add_definitions(-DOPENMP_FOUND)
+  set(CGDEFINITIONS
+    ${CGDEFINITIONS}
+    -DOPENMP_FOUND)
   set(CGLIBS
     ${CGLIBS}
     ${OpenMP_CXX_LIBRARIES})
