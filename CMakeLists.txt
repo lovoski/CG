@@ -32,3 +32,4 @@ if (OpenMP_CXX_FOUND)
 endif()
 
 add_subdirectory(raytracing)
+add_subdirectory(useraylib)
