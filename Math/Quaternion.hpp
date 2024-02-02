@@ -1,18 +1,22 @@
 #ifndef QUATERNION_HPP
 #define QUATERNION_HPP
 
-#include "global.hpp"
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <cmath>
 
-class quaternion {
+namespace lvk {
+
+class Quaternion {
  public:
   double x, y, z, w, norm;
-  quaternion() {}
-  quaternion(double _w, double _x, double _y, double _z)
+  Quaternion() {}
+  Quaternion(double _w, double _x, double _y, double _z)
       : x(_x), y(_y), z(_z), w(_w) {
     norm = sqrt(x * x + y * y + z * z + w * w);
   }
   // construct form a rotation axis and an angle
-  quaternion(double angle, Eigen::Vector3d axis) {
+  Quaternion(double angle, Eigen::Vector3d axis) {
     axis = axis.normalized();
     w = std::cos(angle / 2);
     x = axis.x() * sin(angle / 2);
@@ -20,21 +24,21 @@ class quaternion {
     z = axis.z() * sin(angle / 2);
     norm = sqrt(x * x + y * y + z * z + w * w);
   }
-  quaternion(quaternion &&quat) {
+  Quaternion(Quaternion &&quat) {
     x = std::move(quat.x);
     y = std::move(quat.y);
     z = std::move(quat.z);
     w = std::move(quat.w);
     norm = std::move(quat.norm);
   }
-  quaternion(quaternion &quat) {
+  Quaternion(Quaternion &quat) {
     x = quat.x;
     y = quat.y;
     z = quat.z;
     w = quat.w;
     norm = quat.norm;
   }
-  quaternion &operator=(quaternion &&quat) {
+  Quaternion &operator=(Quaternion &&quat) {
     x = std::move(quat.x);
     y = std::move(quat.y);
     z = std::move(quat.z);
@@ -42,7 +46,7 @@ class quaternion {
     norm = std::move(quat.norm);
     return *this;
   }
-  quaternion &operator=(quaternion &quat) {
+  Quaternion &operator=(Quaternion &quat) {
     x = quat.x;
     y = quat.y;
     z = quat.z;
@@ -51,7 +55,7 @@ class quaternion {
     return *this;
   }
 
-  void normalize() {
+  void Normalize() {
     if (norm == 0) return;
     x /= norm;
     y /= norm;
@@ -59,19 +63,19 @@ class quaternion {
     w /= norm;
     norm = 1.0;
   }
-  quaternion normalized() {
-    if (norm == 0) return quaternion(0.0, 0.0, 0.0, 0.0);
-    return quaternion(w / norm, x / norm, y / norm, z / norm);
+  Quaternion Normalized() {
+    if (norm == 0) return Quaternion(0.0, 0.0, 0.0, 0.0);
+    return Quaternion(w / norm, x / norm, y / norm, z / norm);
   }
-  quaternion conjugate() { return quaternion(w, -x, -y, -z); }
-  quaternion inverse() {
-    if (norm == 0) return quaternion(0.0, 0.0, 0.0, 0.0);
-    return quaternion(w / norm, -x / norm, -y / norm, -z / norm);
+  Quaternion Conjugate() { return Quaternion(w, -x, -y, -z); }
+  Quaternion inverse() {
+    if (norm == 0) return Quaternion(0.0, 0.0, 0.0, 0.0);
+    return Quaternion(w / norm, -x / norm, -y / norm, -z / norm);
   }
 
-  void display() { printf("w:%lf,x:%lf,y:%lf,z:%lf", w, x, y, z); }
+  void Display() { printf("w:%lf,x:%lf,y:%lf,z:%lf\n", w, x, y, z); }
 
-  Eigen::Matrix3d to_mat3() {
+  Eigen::Matrix3d ToMat3() {
     if (norm == 0) return Eigen::Matrix3d::Identity();
     double a = w / norm;
     double b = x / norm;
@@ -84,7 +88,7 @@ class quaternion {
         1 - 2 * b * b - 2 * c * c;
     return ret;
   }
-  Eigen::Matrix4d to_mat4() {
+  Eigen::Matrix4d ToMat4() {
     if (norm == 0) return Eigen::Matrix4d::Identity();
     double a = w / norm;
     double b = x / norm;
@@ -101,40 +105,40 @@ class quaternion {
 };
 
 // grabmann product
-quaternion operator*(quaternion p, quaternion q) {
+Quaternion operator*(Quaternion p, Quaternion q) {
   Eigen::Vector3d _v(p.x, p.y, p.z);
   Eigen::Vector3d _u(q.x, q.y, q.z);
   double s = p.w;
   double t = q.w;
   auto vec = s * _u + t * _v + _v.cross(_u);
-  return quaternion(s * t - _v.dot(_u), vec.x(), vec.y(), vec.z());
+  return Quaternion(s * t - _v.dot(_u), vec.x(), vec.y(), vec.z());
 }
-quaternion operator+(quaternion p, quaternion q) {
-  return quaternion(p.w + q.w, p.x + q.x, p.y + q.y, p.z + q.z);
+Quaternion operator+(Quaternion p, Quaternion q) {
+  return Quaternion(p.w + q.w, p.x + q.x, p.y + q.y, p.z + q.z);
 }
-quaternion operator-(quaternion p, quaternion q) {
-  return quaternion(p.w - q.w, p.x - q.x, p.y - q.y, p.z - q.z);
+Quaternion operator-(Quaternion p, Quaternion q) {
+  return Quaternion(p.w - q.w, p.x - q.x, p.y - q.y, p.z - q.z);
 }
-quaternion operator-(quaternion q) {
-  return quaternion(-q.w, -q.x, -q.y, -q.z);
+Quaternion operator-(Quaternion q) {
+  return Quaternion(-q.w, -q.x, -q.y, -q.z);
 }
-Eigen::Vector3d operator*(quaternion &q, Eigen::Vector3d &vec) {
-  quaternion v(0, vec.x(), vec.y(), vec.z());
-  q.normalize();
+Eigen::Vector3d operator*(Quaternion &q, Eigen::Vector3d &vec) {
+  Quaternion v(0, vec.x(), vec.y(), vec.z());
+  q.Normalize();
   auto tmp = q * v * q.inverse();
   return Eigen::Vector3d(tmp.x, tmp.y, tmp.z);
 }
-quaternion operator*(double k, quaternion &q) {
-  return quaternion(k * q.w, k * q.x, k * q.y, k * q.z);
+Quaternion operator*(double k, Quaternion &q) {
+  return Quaternion(k * q.w, k * q.x, k * q.y, k * q.z);
 }
-quaternion lerp(quaternion q0, quaternion q1, const double t) {
-  q0.normalize();
-  q1.normalize();
+Quaternion Lerp(Quaternion q0, Quaternion q1, const double t) {
+  q0.Normalize();
+  q1.Normalize();
   return (1.0f - t) * q0 + t * q1;
 }
-quaternion slerp(quaternion q0, quaternion q1, const double t) {
-  q0.normalize();
-  q1.normalize();
+Quaternion Slerp(Quaternion q0, Quaternion q1, const double t) {
+  q0.Normalize();
+  q1.Normalize();
   Eigen::Vector3d v0(q0.x, q0.y, q0.z);
   Eigen::Vector3d v1(q1.x, q1.y, q1.z);
   double dot_val = v0.dot(v1);
@@ -146,17 +150,19 @@ quaternion slerp(quaternion q0, quaternion q1, const double t) {
   return std::sin((1.0f - t) * theta) / std::sin(theta) * q0 +
          std::sin(t * theta) / std::sin(theta) * q1;
 }
-quaternion from_euler_angles(double phi_x, double phi_y, double phi_z) {
-  quaternion qx(phi_x, Eigen::Vector3d(1, 0, 0));
-  quaternion qy(phi_y, Eigen::Vector3d(0, 1, 0));
-  quaternion qz(phi_z, Eigen::Vector3d(0, 0, 1));
+Quaternion FromEulerAngles(double phi_x, double phi_y, double phi_z) {
+  Quaternion qx(phi_x, Eigen::Vector3d(1, 0, 0));
+  Quaternion qy(phi_y, Eigen::Vector3d(0, 1, 0));
+  Quaternion qz(phi_z, Eigen::Vector3d(0, 0, 1));
   return qz * qy * qx;
 }
-quaternion from_euler_angles(Eigen::Vector3d euler_angles) {
-  quaternion qx(euler_angles.x(), Eigen::Vector3d(1, 0, 0));
-  quaternion qy(euler_angles.y(), Eigen::Vector3d(0, 1, 0));
-  quaternion qz(euler_angles.z(), Eigen::Vector3d(0, 0, 1));
+Quaternion FromEulerAngles(Eigen::Vector3d euler_angles) {
+  Quaternion qx(euler_angles.x(), Eigen::Vector3d(1, 0, 0));
+  Quaternion qy(euler_angles.y(), Eigen::Vector3d(0, 1, 0));
+  Quaternion qz(euler_angles.z(), Eigen::Vector3d(0, 0, 1));
   return qz * qy * qx;
 }
+
+};  // namespace lvk
 
 #endif

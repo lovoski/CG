@@ -31,7 +31,7 @@ int main() {
   // camera
   camera cam(windowWidth, windowHeight, deg2rad(40.0));
 
-  cam.lookat(vec3(0, 0, 3), vec3(0, 0, -1), vec3(1.0, 1.0, 0));
+  cam.lookat(vec3(0, 0, 3), vec3(0, 0, -1), vec3(0, 1.0, 0));
   Texture texture = LoadTextureFromImage(cam.render(world).getImage());
   while (!WindowShouldClose()) {
     BeginDrawing();

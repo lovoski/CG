@@ -18,8 +18,8 @@ class Buffer {
   }
   Color getPixel(int x, int y) { return GetImageColor(img, x, y); }
   Image getImage() const { return img; }
-  void clear() { ImageClearBackground(&img, BLACK); }
-  void dump(const char *filename) {
+  void Clear() { ImageClearBackground(&img, BLACK); }
+  void Dump(const char *filename) {
     if (ExportImage(img, filename)) {
       printf("save buffer as : %s\n", filename);
     } else {
