@@ -5,3 +5,5 @@
 *.gdb
 *.lib
 *.dll
+
+imgui.ini

@@ -7,3 +7,9 @@
 [submodule "external/eigen3"]
 	path = external/eigen3
 	url = https://gitlab.com/libeigen/eigen.git
+[submodule "external/imgui"]
+	path = external/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "external/rlimgui"]
+	path = external/rlimgui
+	url = https://github.com/raylib-extras/rlImGui.git
