@@ -1,4 +1,4 @@
-// Eulerian
+// Eulerian fluid simulation
 #include <raylib.h>
 #include <imgui.h>
 #include <rlImGui.h>
