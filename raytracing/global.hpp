@@ -12,8 +12,6 @@
 #include <vector>
 // Raylib
 #include <raylib.h>
-#define RAYGUI_IMPLEMENTATION
-#include <raygui.h>
 // Eigen
 #include <Eigen/Core>
 #include <Eigen/Dense>
