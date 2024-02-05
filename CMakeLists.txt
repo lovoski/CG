@@ -8,12 +8,14 @@ find_package(OpenMP REQUIRED)
 
 add_subdirectory(external/raylib)
 add_subdirectory(external/eigen3)
+add_subdirectory(external/tinyobjloader)
 
 include_directories(
   external/imgui
   external/eigen3
   external/raylib/src
-  external/rlimgui)
+  external/rlimgui
+  external/tinyobjloader)
 
 add_library(rlImGui STATIC 
   external/imgui/imgui.cpp
@@ -26,6 +28,7 @@ add_library(rlImGui STATIC
 set(CGLIBS
   raylib
   rlImGui
+  tinyobjloader
   Eigen3::Eigen)
 
 set(CGFLAGS
