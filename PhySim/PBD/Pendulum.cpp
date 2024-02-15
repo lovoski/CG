@@ -32,7 +32,8 @@ class Pendulums {
   }
   void Simulate(float dt, Vector2f g) {
     float _dt = dt / numSubsteps;
-    Update(_dt, g);
+    for (int i = 0; i < numSubsteps; ++i)
+      Update(_dt, g);
   }
   void Draw() {
     for (auto i = 0; i < n - 1; ++i)
@@ -67,7 +68,7 @@ class Pendulums {
 int main() {
   GUI gui(800, 600, "Pendulums");
 
-  vector<float> mass{0, 1, 2, 1};
+  vector<float> mass{0, 1, 1, 1};
   vector<float> length{100, 100, 100};
 
   Vector2f gravity{0, 9.8};
