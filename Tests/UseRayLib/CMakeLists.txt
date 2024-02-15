@@ -17,3 +17,7 @@ target_link_libraries(ChineseFont PRIVATE ${CGLIBS})
 add_executable(DrawTest DrawTest.cpp)
 target_compile_options(DrawTest PRIVATE ${CGFLAGS})
 target_link_libraries(DrawTest PRIVATE ${CGLIBS})
+
+add_executable(Interaction Interaction.cpp)
+target_compile_options(Interaction PRIVATE ${CGFLAGS})
+target_link_libraries(Interaction PRIVATE ${CGLIBS})
