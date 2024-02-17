@@ -7,3 +7,5 @@
 *.dll
 
 imgui.ini
+
+/Animation/PFNN/data
