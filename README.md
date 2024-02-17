@@ -41,7 +41,7 @@ There are some simulators I think worth mentioning.
 The first one is a damping spring simulator based on PBD method.
 In the demo, the red point is the start point of the system, the green points are the expected rest positions of correponding blue points, if the blue point has a different position with the green point, a damped spring force will be applied to the very blue point. One simulation during one frame consists of multiple substeps. To help accelerate the animation, a constant `speed` is multiplied to `dt` in each frame.
 
-<video controls src="Assets/incompressible-demo.mp4" title="Incompressible demo"></video>
+![alt text](Assets/incompressible-demo.gif)
 
 PBD is an intuitive method to simulate simple phenomenon. During the simulation, the object is considered as a set of particles each with its own position and velocity. Our job is to update the velocity with some specific velocity-updating rule. Then integrate the velocity with time to get the delta amount of position. The pipeline of PBD can be represented as follows.
 
