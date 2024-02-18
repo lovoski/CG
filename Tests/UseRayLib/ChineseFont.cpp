@@ -29,7 +29,7 @@ int main() {
     UnloadCodepoints(codePoints);
     BeginDrawing();
     ClearBackground(WHITE);
-    DrawTextEx(font, text, (Vector2){50, 300}, fontSize, fontSpacing, BLACK);
+    DrawTextEx(font, text, {50, 300}, fontSize, fontSpacing, BLACK);
     EndDrawing();
     UnloadFont(font);
   }
