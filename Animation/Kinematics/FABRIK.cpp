@@ -29,8 +29,8 @@ class FABRIK {
   void Solve(Vector2f _target) {
     target = _target;
     for (int i = 0; i < maxIter; ++i) {
-      Backward();
       Forward();
+      Backward();
       if ((target-p[n-1]).norm() < tol) break;
     }
   }
@@ -49,7 +49,7 @@ class FABRIK {
   vector<float> l;
   vector<Vector2f> p;
 
-  void Forward() {
+  void Backward() {
     // Align start pivot to start
     p[0] = start;
     Vector2f d;
@@ -58,8 +58,8 @@ class FABRIK {
       p[i] = p[i-1]-l[i-1]*d;
     }
   }
-  void Backward() {
-    // Align end pivot to target
+  void Forward() {
+    // Align end edffector to target
     p[n-1] = target;
     Vector2f d;
     for (int i = n-2; i >= 0; --i) {
