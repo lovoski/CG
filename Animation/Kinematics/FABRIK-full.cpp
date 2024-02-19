@@ -62,6 +62,11 @@ class FABRIK {
     root = nullptr;
   }
   const vector<Joint *> GetLeafJoints() { return leafJoints; }
+  Vector2f GetRootPos() { return root->pos; }
+  void MoveRoot(Vector2f delta) {
+    rootPosition += delta;
+    for (int i = 0; i < jointNumbers; ++i) joints[i].pos += delta;
+  }
   void Solve(vector<Goal> goals) {
     m_goals = goals;
     for (int i = 0; i < maxIter; ++i) {
@@ -123,8 +128,8 @@ class FABRIK {
       // Current parent is a subbase, store expected parent position in a map
       if (cur->parent != nullptr && cur->parent->child.size() >= 2) {
         Vector2f d = cur->pos - cur->parent->pos;
-        subbasePositions[cur->parent].push_back(
-            cur->pos - cur->length * d.normalized());
+        subbasePositions[cur->parent].push_back(cur->pos -
+                                                cur->length * d.normalized());
         if (subbasePositions[cur->parent].size() == cur->parent->child.size()) {
           // Continue forwarding
           Vector2f centroid = Vector2f::Zero();
@@ -161,7 +166,8 @@ class FABRIK {
 
   void PrintJointsLocation(string token) {
     for (int i = 0; i < jointNumbers; ++i)
-      printf("%s[j%d=(%.2f, %.2f)] ", token.c_str(), i, joints[i].pos.x(), joints[i].pos.y());
+      printf("%s[j%d=(%.2f, %.2f)] ", token.c_str(), i, joints[i].pos.x(),
+             joints[i].pos.y());
     printf("\n");
   }
 };
@@ -176,13 +182,16 @@ int main() {
   auto effectors = solver.GetLeafJoints();
   vector<Goal> goals;
   vector<bool> goalMoved(effectors.size(), false);
-  for (auto effector : effectors)
-    goals.push_back({effector->pos, effector});
+  for (auto effector : effectors) goals.push_back({effector->pos, effector});
+
+  Vector2f rootPos = solver.GetRootPos();
+  bool rootMoved = false;
 
   while (!WindowShouldClose()) {
     auto mouse = GetMousePosition();
     for (int i = 0; i < goals.size(); ++i) {
-      if (CheckCollisionPointCircle(mouse, {goals[i].pos.x(), goals[i].pos.y()}, 20) &&
+      if (CheckCollisionPointCircle(mouse, {goals[i].pos.x(), goals[i].pos.y()},
+                                    20) &&
           IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         goalMoved[i] = true;
       if (goalMoved[i]) {
@@ -190,6 +199,19 @@ int main() {
         goals[i].pos.y() = mouse.y;
         goalMoved[i] = !IsMouseButtonReleased(MOUSE_BUTTON_LEFT);
       }
+    }
+    if (CheckCollisionPointCircle(mouse, {rootPos.x(), rootPos.y()}, 20) && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+      rootMoved = true;
+    }
+    if (rootMoved) {
+      Vector2f delta {mouse.x-rootPos.x(), mouse.y-rootPos.y()};
+      solver.MoveRoot(delta);
+      rootPos.x() = mouse.x;
+      rootPos.y() = mouse.y;
+      for (auto &goal : goals) {
+        goal.pos += delta;
+      }
+      rootMoved = !IsMouseButtonReleased(MOUSE_BUTTON_LEFT);
     }
     solver.Solve(goals);
 
