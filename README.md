@@ -47,6 +47,16 @@ PBD is an intuitive method to simulate simple phenomenon. During the simulation,
 
 ![PBD-pipeline](Assets/PBD-pipeline.png)
 
+### Inverse Kinematics Solvers
+
+The learning resource includes [FABRIK](http://www.andreasaristidou.com/FABRIK.html) by Andreas Aristidou.
+
+FABRIK is an exemplary heuristic iterative inverse kinematics solver, surpassing other existing solvers in terms of its remarkable simplicity and unparalleled flexibility.
+
+In this repository, a simple multi-target solver is implemented in 2d.
+
+![fabrik-mt-demo](Assets/fabrik-mt-demo.gif)
+
 ### Rasterize Renderer
 
 The learning resource includes [tinyrenderer](https://github.com/ssloy/tinyrenderer) by ssloy, [games101](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html) by [Lingqi Yan](https://sites.cs.ucsb.edu/~lingqi/index.html).
