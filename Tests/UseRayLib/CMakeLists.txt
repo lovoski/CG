@@ -21,3 +21,11 @@ target_link_libraries(DrawTest PRIVATE ${CGLIBS})
 add_executable(Interaction Interaction.cpp)
 target_compile_options(Interaction PRIVATE ${CGFLAGS})
 target_link_libraries(Interaction PRIVATE ${CGLIBS})
+
+add_executable(Trajectory Damper/Trajectory.cpp)
+target_compile_options(Trajectory PRIVATE ${CGFLAGS})
+target_link_libraries(Trajectory PRIVATE ${CGLIBS})
+
+add_executable(Damper Damper/Damper.cpp)
+target_compile_options(Damper PRIVATE ${CGFLAGS})
+target_link_libraries(Damper PRIVATE ${CGLIBS})
