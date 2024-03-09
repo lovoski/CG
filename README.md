@@ -57,6 +57,24 @@ In this repository, a simple multi-target solver is implemented in 2d.
 
 ![fabrik-mt-demo](Assets/fabrik-mt-demo.gif)
 
+### Spring Damper
+
+The learning resource is [Spring It On](https://theorangeduck.com/page/spring-roll-call#springdamper) by Holden which gave a detailed explaination to the equations used to construct a simple damper, an exact damper, and some spring dampers.
+
+It is noteworthy that solving an exact spring damper involves solving an ordinary differential equation (ODE) with the following structure:
+
+$$
+\frac{\partial^2x}{\partial t^2}=stiffness\times (x_g-x) + damping\times (v_g-\frac{\partial x}{\partial t})
+$$
+
+Holden gave an analytic solution for this ODE under three conditions named cirtical damped, under damped and over damped.
+
+To make a controller based on the damper, we would put the user input as 2d vector indicating the desired velocity for the player in current frame, and use a spring damper to approximate the desired speed. The positions is itegrate direction from the analytic solution of velocity.
+
+I wrote a simple demo of it : 
+
+![spring-controller-demo](Assets/spring-controller-demo.gif)
+
 ### Rasterize Renderer
 
 The learning resource includes [tinyrenderer](https://github.com/ssloy/tinyrenderer) by ssloy, [games101](https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html) by [Lingqi Yan](https://sites.cs.ucsb.edu/~lingqi/index.html).
