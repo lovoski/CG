@@ -33,82 +33,104 @@ struct TriFace {
   int v[3];  // indices for the triangle vertices
 };
 
+// Returns false if the string contains any non-whitespace characters
+// Returns false if the string contains any non-ASCII characters
+bool isWhitespace(std::string s) {
+  for (int index = 0; index < s.length(); index++)
+    if (!std::isspace(s[index])) return false;
+  return true;
+}
+
+void LoadFromOff(std::string filename, std::vector<Vertex> &vertices, std::vector<TriFace> &faces) {
+  // Read the OFF file
+  std::string line, tmp;
+  std::ifstream offfile(filename);
+  double a1, a2, a3;
+  int numFaces, numVertices;
+  if (offfile.is_open()) {
+    // Check first line is a OFF file
+    while (std::getline(offfile, line)) {  // add check boundary vertices flag
+      std::istringstream(line) >> tmp;
+      if (tmp[0] != '#' && !isWhitespace(line)) {
+        if (tmp[0] == 'O' && tmp[1] == 'F' &&
+            tmp[2] == 'F')  // Check if the format is OFF
+          break;
+        else {
+          std::cout << "The file is not an OFF file" << std::endl;
+          exit(0);
+        }
+      }
+    }
+    // Read the number of vertices and faces
+    while (std::getline(offfile, line)) {  // add check boundary vertices flag
+      std::istringstream(line) >> tmp;
+      if (tmp[0] != '#' && !isWhitespace(line)) {
+        std::istringstream(line) >> numVertices >> numFaces;
+        // Create space for internal storage
+        vertices.resize(numVertices);
+        faces.resize(numFaces);
+        break;
+      }
+    }
+    // Read vertices
+    int index = 0;
+    while (index < numVertices && std::getline(offfile, line)) {
+      std::istringstream(line) >> tmp;
+      if (tmp[0] != '#' && !isWhitespace(line)) {
+        std::istringstream(line) >> a1 >> a2 >> a3;
+        Vertex v;
+        v.id = index;
+        v.x = a1;
+        v.y = a2;
+        v.z = a3;
+        vertices[index] = v;
+        index++;
+      }
+    }
+    // Read faces
+    int verticesPerFace, t1, t2, t3;
+    index = 0;
+    while (index < numFaces && std::getline(offfile, line)) {
+      std::istringstream(line) >> tmp;
+      if (tmp[0] != '#' && !isWhitespace(line)) {
+        std::istringstream(line) >> verticesPerFace >> t1 >> t2 >> t3;
+        TriFace face;
+        face.id = index;
+        face.v[0] = t1;
+        face.v[1] = t2;
+        face.v[2] = t3;
+        faces[index] = face;
+        index++;
+      }
+    }
+  } else
+    std::cout << "Unable to open node file";
+  offfile.close();
+}
+
 // Halfedge mesh data structure
 class HalfedgeMesh {
  public:
   HalfedgeMesh() {}
-  HalfedgeMesh(std::string filename) { LoadFromOff(filename); }
-  ~HalfedgeMesh() {}
-  // Initialize from .off triangle model file
-  void LoadFromOff(std::string filename) {
-    // Read the OFF file
-    std::string line, tmp;
-    std::ifstream offfile(filename);
-    double a1, a2, a3;
-    if (offfile.is_open()) {
-      // Check first line is a OFF file
-      while (std::getline(offfile, line)) {  // add check boundary vertices flag
-        std::istringstream(line) >> tmp;
-        if (tmp[0] != '#' && !isWhitespace(line)) {
-          if (tmp[0] == 'O' && tmp[1] == 'F' &&
-              tmp[2] == 'F')  // Check if the format is OFF
-            break;
-          else {
-            std::cout << "The file is not an OFF file" << std::endl;
-            exit(0);
-          }
-        }
-      }
-      // Read the number of vertices and faces
-      while (std::getline(offfile, line)) {  // add check boundary vertices flag
-        std::istringstream(line) >> tmp;
-        if (tmp[0] != '#' && !isWhitespace(line)) {
-          std::istringstream(line) >> this->numVertices >> this->numFaces;
-          // Create space for internal storage
-          vertices.resize(this->numVertices);
-          faces.resize(this->numFaces);
-          numHalfedges = 3 * this->numFaces;
-          halfedges.resize(3 * this->numFaces);
-          break;
-        }
-      }
-      // Read vertices
-      int index = 0;
-      while (index < numVertices && std::getline(offfile, line)) {
-        std::istringstream(line) >> tmp;
-        if (tmp[0] != '#' && !isWhitespace(line)) {
-          std::istringstream(line) >> a1 >> a2 >> a3;
-          Vertex v;
-          v.id = index;
-          v.x = a1;
-          v.y = a2;
-          v.z = a3;
-          vertices[index] = v;
-          index++;
-        }
-      }
-      // Read faces
-      int verticesPerFace, t1, t2, t3;
-      index = 0;
-      while (index < numFaces && std::getline(offfile, line)) {
-        std::istringstream(line) >> tmp;
-        if (tmp[0] != '#' && !isWhitespace(line)) {
-          std::istringstream(line) >> verticesPerFace >> t1 >> t2 >> t3;
-          TriFace face;
-          face.id = index;
-          face.v[0] = t1;
-          face.v[1] = t2;
-          face.v[2] = t3;
-          faces[index] = face;
-          index++;
-        }
-      }
-    } else
-      std::cout << "Unable to open node file";
-    offfile.close();
-
+  // Contruct from file
+  HalfedgeMesh(std::string offModelName) {
+    LoadFromOff(offModelName, vertices, faces);
+    numFaces = faces.size();
+    numVertices = vertices.size();
+    halfedges.resize(numFaces * 3);
+    numHalfedges = numFaces * 3;
     ConstructHalfedges();
   }
+  HalfedgeMesh(std::vector<Vertex> &v, std::vector<TriFace> &f) {
+    faces = f;
+    numFaces = f.size();
+    vertices = v;
+    numVertices = v.size();
+    halfedges.resize(numFaces * 3);
+    numHalfedges = numFaces * 3;
+    ConstructHalfedges();
+  }
+  ~HalfedgeMesh() {}
 
   // void SaveToOff(std::string filename) {}
 
@@ -178,14 +200,6 @@ class HalfedgeMesh {
   std::vector<Vertex> vertices;
   std::vector<TriFace> faces;
   std::vector<Halfedge> halfedges;
-
-  // Returns false if the string contains any non-whitespace characters
-  // Returns false if the string contains any non-ASCII characters
-  bool isWhitespace(std::string s) {
-    for (int index = 0; index < s.length(); index++)
-      if (!std::isspace(s[index])) return false;
-    return true;
-  }
 
   // Convert each triangle face into three halfedges
   // Traversal the edges and create exteroir edges
