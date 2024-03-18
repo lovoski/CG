@@ -82,3 +82,20 @@ The learning resource includes [tinyrenderer](https://github.com/ssloy/tinyrende
 ### Path Tracer
 
 The learning resource includes [RayTracingInOneWeekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) by Shirley et al.
+
+### Data Structure
+
+A simple halfedge mesh data structure from scratch is included in `DS/Halfedge.h`:
+
+```cpp
+CG::HalfedgeMesh mesh(RESOURCE_DIR "/cloth.off");
+
+int vn = mesh.GetNumVertices();
+int vf = mesh.GetNumFaces();
+int ve = mesh.GetNumHalfedges();
+
+PrintEdgeInfo(mesh, mesh.Next(e1));
+PrintEdgeInfo(mesh, mesh.Next(mesh.Next(e1)));
+
+auto neigh = mesh.NeighborsOfVertex(0);
+```
