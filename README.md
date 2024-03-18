@@ -99,3 +99,7 @@ PrintEdgeInfo(mesh, mesh.Next(mesh.Next(e1)));
 
 auto neigh = mesh.NeighborsOfVertex(0);
 ```
+
+The following image shows the query of the halfedge data structure:
+
+![halfedge-query](Assets/halfedge.png)
